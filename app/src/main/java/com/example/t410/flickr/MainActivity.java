@@ -39,17 +39,14 @@ public class MainActivity extends AppCompatActivity {
 
         AdaptadorCategorias adaptador = new AdaptadorCategorias(this, category);
         Spinner categorias = (Spinner)findViewById(R.id.spinner);
-
-        //adaptador.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
         categorias.setAdapter(adaptador);
-
         categorias.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, android.view.View v, int position, long id) {
                         if(cont==0){
                             cont++;
                         } else {
-                            String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=4eed399365e073258f5417bb7154cfc8&text=playa&per_page=2&format=json&nojsoncallback=1";
+                            String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=4eed399365e073258f5417bb7154cfc8&text="+category.get(position).getNombre()+"&per_page=2&format=json&nojsoncallback=1";
                             llamarJson(url);
                         }
                     }
@@ -59,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "No Seleccionado:", Toast.LENGTH_SHORT).show();
                     }
                 });
-       // categorias.setPrompt("Seleccione categoria:");
     }
 
     public void llamarJson(String url) {
@@ -78,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                                 "",jarr.getJSONObject(i).getString("title")));
                     }
                     Intent act = new Intent(MainActivity.this, Gallery.class);
-                    //act.putExtra("string", response.toString());
                     startActivity(act);
 
                 } catch (JSONException e) {

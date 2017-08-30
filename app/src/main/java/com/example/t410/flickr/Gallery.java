@@ -1,6 +1,7 @@
 package com.example.t410.flickr;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.GridView;
@@ -9,12 +10,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class Gallery extends AppCompatActivity {
-
+    static String finalUrl="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,23 +34,41 @@ public class Gallery extends AppCompatActivity {
         ArrayList<Photos> galeria= new ArrayList<>();
         for (int i = 0; i < MainActivity.photos.size(); i++) {
             galeria.add(new Photos(MainActivity.photos.get(i).getId(),MainActivity.photos.get(i).getOwner(),
-                    MainActivity.photos.get(i).getUrl(),MainActivity.photos.get(i).getTitle()));
+                    obtenerUrl(MainActivity.photos.get(i).getId()),MainActivity.photos.get(i).getTitle()));
         }
-        //TextView tv = (TextView)findViewById(R.id.tv2);
-        //tv.setText(galeria.get(0).getId()+"  "+galeria.get(0).getOwner()+"  "+galeria.get(0).getUrl()+"  "+galeria.get(0).getTitle());
-        Log.d("LIISTAAA: ", galeria.toString());
+
         AdaptadorGaleria adaptador = new AdaptadorGaleria(this, galeria);
+        GridView grid = (GridView) findViewById(R.id.grid);
+        grid.setAdapter(adaptador);
+    }
+    public String obtenerUrl(String imageId){
+        String url="https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=4eed399365e073258f5417bb7154cfc8&photo_id="+imageId+"&format=json&nojsoncallback=1";
+        finalUrl="";
+        final int SIMPLE_REQUEST = 1;
+        RequestQueue queue = Volley.newRequestQueue(this);  // this = context
+        JsonObjectRequest request = new JsonObjectRequest(url, new Response.Listener<JSONObject>(){
 
-         GridView grid = (GridView) findViewById(R.id.grid);
-         grid.setAdapter(adaptador);
-        //adaptador.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
+            @Override
+            public void onResponse(JSONObject response) {
 
-        /*ImageView img = (ImageView)findViewById(R.id.imageView);
-        String url= "http://embasdenart.weebly.com/uploads/4/0/0/2/40023047/2208230.jpg?250";
-        Glide.with(this).load(url).into(img);
-        String json = MainActivity.photos.get(0).getId()+"\n"+MainActivity.photos.get(0).getOwner()
-                +"\n"+MainActivity.photos.get(0).getTitle();
-        TextView tv1 = (TextView) findViewById(R.id.tv1);
-        tv1.setText(json);*/
+                try {
+                    JSONArray jarr = response.getJSONObject("sizes").getJSONArray("size");
+                    finalUrl = jarr.getJSONObject(4).getString("source");
+
+                } catch (JSONException e) {
+                    //  e.printStackTrace();
+                }
+            }
+        } , new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Procesar VolleyError
+            }
+        });
+
+        request.setTag(SIMPLE_REQUEST);
+        queue.add(request);
+
+        return finalUrl;
     }
 }
