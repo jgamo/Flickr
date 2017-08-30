@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONObject response) {
-                Toast.makeText(getApplicationContext(), "Respuesta :"+ response.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("Respuesta", response.toString());
+                //Toast.makeText(getApplicationContext(), "Respuesta :"+ response.toString(), Toast.LENGTH_SHORT).show();
+                //Log.d("Respuesta", response.toString());
                 try {
                     JSONArray jarr = response.getJSONObject("photos").getJSONArray("photo");
                     for (int i = 0; i < jarr.length(); i++) {
