@@ -7,20 +7,20 @@ package com.example.t410.flickr;
 public class Photos {
     private String id;
     private String owner;
-    private String secret;
+    private String url;
     private String title;
 
     public Photos() {
         id="";
         owner="";
-        secret="";
+        url="";
         title="";
     }
 
-    public Photos(String id, String owner, String secret, String title) {
+    public Photos(String id, String owner, String url, String title) {
         this.id = id;
         this.owner = owner;
-        this.secret = secret;
+        this.url = url;
         this.title = title;
     }
 
@@ -40,12 +40,12 @@ public class Photos {
         this.owner = owner;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getUrl() {
+        return url;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getTitle() {
